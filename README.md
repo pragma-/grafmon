@@ -94,8 +94,12 @@ Examples:
 
 # Notes
 
-I needed an easy-to-install app that can graph in real-time various system metrics, notably
-percentages of CPU usages for all active processes. The KDE and Gnome system monitors/task
+This app is aimed at short-term use on personal laptops/desktops. For long-term monitoring of
+servers, you should use something like sysstat logging along with grafana/kibana.
+
+I needed an easy-to-install local app that requires no-to-minimal set-up to graph in real-time
+various system metrics and custom IoT metrics, notably percentages of CPU usages for all active
+processes and wattage usages of my home appliances. The KDE and Gnome system monitors/task
 managers graphed overall CPU usage rather than per-process usage.
 
 Grafmon is inspired in part by Windows' perfmon.exe. The graph does not scroll, but instead
