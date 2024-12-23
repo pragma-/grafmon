@@ -130,7 +130,7 @@ class MainWindow(QtWidgets.QMainWindow):
         QtWidgets.QMessageBox.about(
                 self,
                 "About grafmon",
-                "<h1><center>grafmon 1.0.0</center></h1>"
+                "<h1><center>grafmon 1.0.1</center></h1>"
                 "<h2><p>Copyright &copy; 2024-2025 <a href='https://github.com/pragma-'>Pragmatic Software<a></h2>"
                 "<hr>"
                 "<h3><p><a href='https://github.com/pragma-/grafmon'>https://github.com/pragma-/grafmon</a>"
