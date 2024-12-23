@@ -1,0 +1,3 @@
+#!/bin/sh
+# Text resident set (executable code memory usage) of all processes
+ps -eo trs,pid,comm --no-headers

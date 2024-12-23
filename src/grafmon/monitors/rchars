@@ -1,0 +1,3 @@
+#!/bin/sh
+# Number of bytes read from storage of all processes
+ps -eo rchars,pid,comm --no-headers

@@ -1,0 +1,3 @@
+#!/bin/sh
+# Number of canceled write bytes of all processes
+ps -eo wcbytes,pid,comm --no-headers

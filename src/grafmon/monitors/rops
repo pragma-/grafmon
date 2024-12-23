@@ -1,0 +1,3 @@
+#!/bin/sh
+# Number of read I/O operations of all processes
+ps -eo rops,pid,comm --no-headers

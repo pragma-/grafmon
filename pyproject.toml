@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools >= 61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "grafmon"
+version = "1.0.0"
+dependencies = [
+  "pyqtgraph",
+  "PyQt6",
+  "psutil",
+]
+requires-python = ">= 3.7"
+authors = [
+  {name = "Pragmatic Software", email = "pragma78@gmail.com" },
+]
+description = "Monitor metrics in a real-time time-series line-graph (a-la perfmon.exe)"
+readme = "README.md"
+license = {file = "LICENSE"}
+keywords = [
+  "graph", "perfmon", "perfmon.exe", "pyqtgraph", "metrics", "monitor",
+  "perf", "performance", "cpu", "pcpu", "rss", "process", "memory", "ram",
+]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Programming Language :: Python :: 3",
+  "Environment :: X11 Applications",
+  "Environment :: X11 Applications :: Qt",
+  "Intended Audience :: Developers",
+  "Intended Audience :: End Users/Desktop",
+  "Intended Audience :: Information Technology",
+  "Intended Audience :: System Administrators",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: POSIX",
+  "Topic :: System :: Monitoring",
+  "Topic :: Utilities",
+]
+
+[project.urls]
+Homepage = "https://github.com/pragma-/grafmon"
+Repository = "https://github.com/pragma-/grafmon.git"
+Issues = "https://github.com/pragma-/grafmon/issues"
+
+[project.gui-scripts]
+grafmon = "grafmon:app.exec"
+
+[tool.setuptools.package-data]
+"grafmon.monitors" = ["*"]

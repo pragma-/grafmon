@@ -1,0 +1,3 @@
+#!/bin/sh
+# Resident set size (physical memory usage, in kilobytes) of all processes
+ps -eo rss,pid,comm --no-headers

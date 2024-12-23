@@ -1,0 +1,3 @@
+#!/bin/sh
+# CPU%, including dead children, in extended ##.### format of all processes
+ps -eo cuc,pid,comm --no-headers

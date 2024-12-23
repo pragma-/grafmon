@@ -1,0 +1,3 @@
+#!/bin/sh
+# Physical pages used of all processes
+ps -eo sz,pid,comm --no-headers

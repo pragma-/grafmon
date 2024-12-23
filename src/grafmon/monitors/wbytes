@@ -1,0 +1,3 @@
+#!/bin/sh
+# Number of bytes really written to storage layer of all processes
+ps -eo wbytes,pid,comm --no-headers

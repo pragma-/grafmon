@@ -1,0 +1,3 @@
+#!/bin/sh
+# Number of bytes really fetched from storage layer of all processes
+ps -eo rbytes,pid,comm --no-headers

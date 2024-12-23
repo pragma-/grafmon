@@ -1,0 +1,3 @@
+#!/bin/sh
+# Physical memory percentage of all processes
+ps -eo pmem,pid,comm --no-headers

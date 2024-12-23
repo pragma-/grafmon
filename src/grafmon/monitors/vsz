@@ -1,0 +1,3 @@
+#!/bin/sh
+# Virtual memory usage of all processes
+ps -eo vsz,pid,comm --no-headers

@@ -1,0 +1,3 @@
+#!/bin/sh
+# Thread counts of all processes
+ps -eo thcount,pid,comm --no-headers

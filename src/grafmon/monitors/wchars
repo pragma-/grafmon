@@ -1,0 +1,3 @@
+#!/bin/sh
+# Number of bytes written to storage of all processes
+ps -eo wchars,pid,comm --no-headers

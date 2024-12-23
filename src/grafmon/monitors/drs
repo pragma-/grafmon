@@ -1,0 +1,3 @@
+#!/bin/sh
+# Data resident set size of all processes
+ps -eo drs,pid,comm --no-headers

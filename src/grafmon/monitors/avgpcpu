@@ -1,0 +1,3 @@
+#!/bin/sh
+# Average CPU% (using `ps`) over lifetime of all processes
+ps -eo pcpu,pid,comm --no-headers

@@ -1,0 +1,3 @@
+#!/bin/sh
+# Number of write I/O operations of all processes
+ps -eo wops,pid,comm --no-headers

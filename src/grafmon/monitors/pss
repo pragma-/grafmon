@@ -1,0 +1,3 @@
+#!/bin/sh
+# Proportional share size of all processes
+ps -eo pss,pid,comm --no-headers
