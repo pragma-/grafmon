@@ -75,14 +75,22 @@ wops       Number of write I/O operations of all processes
 
 # Custom monitor
 
-Grafmon accepts user-provided commands for monitoring. The command must use output lines
-in the format of `<float> <string>` to STDIN. The `<float>` will be the value associated
-with `<string>`. The `<string>` may contain spaces. Grafmon will invoke the command every
-refresh-rate tick.
+Grafmon is not limited to the builtin monitors. Grafmon also accepts user-provided
+commands for monitoring. Grafmon can monitor smart plug metrics to track power usage of
+appliances. Grafmon can monitor IoT sensors and more!
 
-Example:
+The command must output lines in the format of `<float> <string>` to STDOUT. The `<float>`
+will be the value associated with `<string>`. The `<string>` may contain spaces. Grafmon will
+invoke the command every refresh-rate tick. It may be necessary to write a small wrapper script
+to convert the data to the correct formatting.
 
-    grafmon -c ps -eo pcpu,pid,comm --no-headers
+Examples:
+
+    grafmon -c 'ps -eo pcpu,pid,comm --no-headers'
+
+    grafmon -c 'cat file_regularly_overwritten'
+
+    grafmon -c 'socat TCP-LISTEN:13510 -'
 
 # Notes
 
@@ -91,10 +99,10 @@ percentages of CPU usages for all active processes. The KDE and Gnome system mon
 managers graphed overall CPU usage rather than per-process usage.
 
 Grafmon is inspired in part by Windows' perfmon.exe. The graph does not scroll, but instead
-updates in a "wipe". A vertical line will move from left-to-right as the metrics are read
-each tick. When the line reaches the end, it resets back to the beginning. This allows easy
-hovering over of graph elements to inspect the data. A moving scrolling graph would be more
-difficult to hover over the lines and their peaks.
+updates in a horizontally rolling blind. A vertical line will move from left-to-right as the
+metrics are read each tick. When the line reaches the end, it resets back to the beginning.
+This allows easy hovering over of graph elements to inspect the data. A moving scrolling graph
+would be more difficult to hover over the lines and their peaks.
 
 Lines may be clicked on to highlight them to more easily see them in the graph. Lines may
 be hovered-over to see a tooltip of their values. Their values will also appear in the status
