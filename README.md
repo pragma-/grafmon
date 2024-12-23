@@ -81,8 +81,12 @@ appliances. Grafmon can monitor IoT sensors and more!
 
 The command must output lines in the format of `<float> <string>` to STDOUT. The `<float>`
 will be the value associated with `<string>`. The `<string>` may contain spaces. Grafmon will
-invoke the command every refresh-rate tick. It may be necessary to write a small wrapper script
-to convert the data to the correct formatting.
+invoke the command every refresh-rate tick; the command must start and terminate each tick.
+It may be necessary to write a small wrapper script that read chunks of the input at a time
+and terminates within a update tick.
+
+I am planning to implement an `-s, --stream` option to continually read data from an open
+stream, e.g. `grafmon -s 'tail -f log'` or `monitor_cmd | grafmon -` in the near future!
 
 Examples:
 
@@ -100,7 +104,7 @@ servers, you should use something like sysstat logging along with grafana/kibana
 I needed an easy-to-install local app that requires no-to-minimal set-up to graph in real-time
 various system metrics and custom IoT metrics, notably percentages of CPU usages for all active
 processes and wattage usages of my home appliances. The KDE and Gnome system monitors/task
-managers graphed overall CPU usage rather than per-process usage.
+managers graph overall CPU usage rather than per-process usage.
 
 Grafmon is inspired in part by Windows' perfmon.exe. The graph does not scroll, but instead
 updates in a horizontally rolling blind. A vertical line will move from left-to-right as the
