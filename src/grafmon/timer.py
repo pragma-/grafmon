@@ -1,10 +1,8 @@
 import time
 
-import pyqtgraph as pg
 from PyQt6 import QtCore
 
 from .context            import Context
-from .hoverablecurveitem import HoverableCurveItem
 from .monitor            import Monitor
 
 class Timer:
