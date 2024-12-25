@@ -7,7 +7,7 @@ from PyQt6.QtCore import QProcess
 import psutil as ps
 
 from .context import Context, MonitorType
-from .errordialog import ErrorDialog
+from .dialogs import ErrorDialog
 
 class Monitor:
     def __init__(self, context: Context):
@@ -26,11 +26,10 @@ class Monitor:
         self.process.errorOccurred.connect(self.process_errored)
         self.process.finished.connect(self.process_finished)
 
-    def start(self):
+    def update(self):
         if self.process.state() == QProcess.ProcessState.NotRunning:
-            self.context.update_tick()
             self.process.start(self.command, self.args)
-        else:
+        elif self.context.monitor_type != MonitorType.STREAM:
             print("Previous tick's monitor still running... skipping tick", file=sys.stderr)
 
     def stop(self):
@@ -42,9 +41,8 @@ class Monitor:
             line = self.process.readLine()
             line = bytes(line).decode("utf8")
             data = line.strip().split(maxsplit=1)
-            pid, _ = data[1].split(maxsplit=1)
-
             try:
+                pid, _ = data[1].split(maxsplit=1)
                 pid = int(pid)
             except:
                 pid = 0
@@ -75,6 +73,7 @@ class Monitor:
         if self.ignore_error:
             return
         self.context.timer.stop()
+        self.context.fatal_error = 1
         print(f"Monitor error: {error}: {self.process.errorString()}", file=sys.stderr)
         err = ErrorDialog()
         err.setText(f"Monitor error: {error}")
@@ -83,12 +82,11 @@ class Monitor:
         self.context.app.exit(1)
 
     def process_finished(self, exitcode):
-        if exitcode == 0:
-            self.context.mainwindow.zero_not_updated()
-        else:
+        if exitcode != 0:
             if self.ignore_error:
                 return
             self.context.timer.stop()
+            self.context.fatal_error = 1
             err = ErrorDialog()
             err.setText("Monitor error")
             if len(self.error_message):

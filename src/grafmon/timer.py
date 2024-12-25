@@ -1,9 +1,7 @@
-import time
-
 from PyQt6 import QtCore
 
-from .context            import Context
-from .monitor            import Monitor
+from .context import Context
+from .monitor import Monitor
 
 class Timer:
     def __init__(self, context: Context, *args, **kwargs):
@@ -13,7 +11,6 @@ class Timer:
         self.timer.setInterval(context.refresh_rate)
         self.timer.timeout.connect(self.tick)
         self.ticks = 0
-        self.monitor = Monitor(context)
 
     def start(self):
         self.timer.start()
@@ -22,9 +19,13 @@ class Timer:
         self.timer.stop()
 
     def tick(self):
+        self.context.mainwindow.zero_not_updated()
         self.ticks += 1
-        self.context.now = time.time()
-        self.monitor.start()
+        self.context.update_tick()
+        self.context.mainwindow.rgn.setRegion(
+                (self.context.tick_index, self.context.tick_index)
+        )
+        self.context.monitor.update()
 
     def update_interval(self):
         self.timer.setInterval(self.context.refresh_rate)

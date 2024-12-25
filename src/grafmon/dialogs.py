@@ -9,3 +9,14 @@ class ErrorDialog(QMessageBox):
 
     def show(self):
         self.exec();
+
+
+class AlertDialog(QMessageBox):
+    def __init__(self, *args, **kwargs):
+        super(AlertDialog, self).__init__(*args, **kwargs)
+        self.setIcon(QMessageBox.Icon.Information)
+        self.setWindowTitle("Alert")
+        self.setStandardButtons(QMessageBox.StandardButton.Close)
+
+    def show(self):
+        self.exec();

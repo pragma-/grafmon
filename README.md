@@ -10,15 +10,19 @@ Monitor metrics in a real-time time-series line-graph
 
 # Features
 
-* Real-time time-series graph of metrics.
-* Provide your own metric command.
-* Several built-in metrics.
-* Polished graph interface.
-* Adjustable refresh rate.
-* Pausable updates.
-* Hide/show lines.
-* Clickable/hoverable lines.
-* Remembers window position/layout.
+* Real-time time-series graph of metrics with several ways to ingest data:
+  * Streaming from file, socket or STDIN
+  * Builtin system monitors
+  * Custom command
+* Polished graph interface
+  * Hover over lines to see data
+  * Click lines to highlight
+  * Pause graph updates
+  * Customize count of ticks along x-axis
+  * Customize count of labels along x-axis
+* Adjustable refresh rate
+  * Defaults to 1000 ms
+* Remembers window position/layout
 
 # Install
 
@@ -27,19 +31,20 @@ Monitor metrics in a real-time time-series line-graph
 # Usage
 
 ```
-usage: grafmon [-h] [-m MONITOR | -c COMMAND] [-r REFRESHRATE] [-t MAXTICKS]
-               [-l MAXLABELS] [--list-monitors]
+usage: grafmon [-h] [-m MONITOR | -c COMMAND | -s STREAM | -f [FILE]] [-r REFRESHRATE] [-t TICKS] [-l LABELS] [--list-monitors]
 
 Monitor metrics in a real-time time-series graph
 
 options:
   -h, --help            show this help message and exit
   -m MONITOR, --monitor MONITOR
-                        Select from builtin monitors to feed data into monitor
-                        [default: pcpu]
+                        Select from builtin monitors to feed data into graph [default: pcpu]
   -c COMMAND, --command COMMAND
-                        User command to feed data into monitor [example: ps
-                        -eo rss,pid,comm --no-headers]
+                        User command to feed data into graph [example: ps -eo rss,pid,comm --no-headers]
+  -s STREAM, --stream STREAM
+                        Streaming user command to feed data into graph [example: tail -f file]
+  -f [FILE], --file [FILE]
+                        Continuously read file or STDIN to feed data into graph
   -r REFRESHRATE, --refreshrate REFRESHRATE
                         Refresh rate in milliseconds [default: 1000]
   -t TICKS, --ticks TICKS
@@ -73,28 +78,83 @@ wchars     Number of bytes written to storage of all processes
 wops       Number of write I/O operations of all processes
 ```
 
-# Custom monitor
+# Custom monitors
 
 Grafmon is not limited to the builtin monitors. Grafmon also accepts user-provided
-commands for monitoring. Grafmon can monitor smart plug metrics to track power usage of
-appliances. Grafmon can monitor IoT sensors and more!
+commands for monitoring. Grafmon can monitor data from files, streams, sockets and STDIN.
+Grafmon can be used to easily monitor IoT sensors such as smart plug metrics to track power
+usage of appliances, and more!
 
-The command must output lines in the format of `<float> <string>` to STDOUT. The `<float>`
-will be the value associated with `<string>`. The `<string>` may contain spaces. Grafmon will
-invoke the command every refresh-rate tick; the command must start and terminate each tick.
-It may be necessary to write a small wrapper script that read chunks of the input at a time
-and terminates within a update tick.
+Demonstration video:
 
-I am planning to implement an `-s, --stream` option to continually read data from an open
-stream, e.g. `grafmon -s 'tail -f log'` or `monitor_cmd | grafmon -` in the near future!
+[![custom monitors video](https://img.youtube.com/vi/sOQtWdZviTY/0.jpg)](https://youtube.com/watch?v=sOQtWdZviTY)
 
-Examples:
+## Data format
+
+The monitor must output lines in the format of `<float> <string>` to STDOUT. The `<float>`
+will be the value associated with `<string>`. The `<string>` may contain spaces.
+
+For example, a monitor for household appliance wattage consumption might output:
+
+     110 Kitchen Refrigerator
+     60 Living Room Television
+     80 Office Computer
+     130 Kitchen Refrigerator
+     65 Living Room Television
+     90 Office Computer
+
+For system processes, it can be helpful to include the PIDs in the `<string>`:
+
+    10 2301 X
+    30 2304 python3
+    50 2250 qemu
+    15 2301 X
+    20 2304 python3
+    60 2250 qemu
+
+## Custom command
+
+     -c COMMAND, --command COMMAND
+
+Grafmon will invoke the command every refresh-rate tick; the command must start and terminate each tick.
+This is ideal for executing short-lived processes to fetch data.
+
+For example:
 
     grafmon -c 'ps -eo pcpu,pid,comm --no-headers'
 
-    grafmon -c 'cat file_regularly_overwritten'
+## Streaming
 
-    grafmon -c 'socat TCP-LISTEN:13510 -'
+     -s STREAM, --stream STREAM
+
+Grafmon will invoke the command once and expects the command to remain running. This is ideal for
+fetching data from a long-running process or server.
+
+For example:
+
+     grafmon -s 'tail -f file -n0'
+     grafmon -s 'socat UNIX-LISTEN:data.sock -'
+
+## File or STDIN
+
+     -f [FILE], --file [FILE]
+
+Grafmon will open the file and continuously fetch data. If `[FILE]` is omitted, STDIN
+will be opened.
+
+For example:
+
+     socat TCP-LISTEN:1234 - | grafmon -f
+
+# Customizing ticks and labels
+
+The count of ticks and labels along the x-axis can be customized. The default is 60 ticks
+and 10 labels. This is ideal for the default window size and refresh-rate, providing a graph
+window containing 1 minute's worth of ticks at 1000 ms per update.
+
+If you prefer more or less ticks, use the `-t TICKS, --ticks TICKS` option.
+
+If you prefer more or less labels, use the `-l LABELS, --labels LABELS` option.
 
 # Notes
 
@@ -117,5 +177,5 @@ be hovered-over to see a tooltip of their values. Their values will also appear 
 bar at the bottom of the window.
 
 To zoom the graph in to inspect lower valued lines, you can untick the checkboxes in the list
-on the left. Unticking checkboxes for lines with the highest peaks will hide the lines and
+on the left. Unticking checkboxes for lines with the highest peaks will hide those lines and
 the graph will zoom in to fit the next highest peaks.

@@ -7,7 +7,9 @@ from enum import Enum
 
 class MonitorType(Enum):
     BUILTIN = 1
-    USER = 2
+    COMMAND = 2
+    STREAM = 3
+    FILE = 4
 
 class Context:
     def __init__(self,
@@ -22,22 +24,33 @@ class Context:
         self.tick_mod = 5
         self.monitor_type = MonitorType.BUILTIN
         self.selected_width = 4
+        self.fatal_error = 0
 
     def initFromFile(self, path: str):
         pass
 
     def initFromArgs(self, args: list[str] | None = None):
-        parser = argparse.ArgumentParser(description='Monitor metrics in a real-time time-series graph');
+        parser = argparse.ArgumentParser(description='Monitor metrics in a real-time time-series graph')
 
         group = parser.add_mutually_exclusive_group()
         group.add_argument('-m', '--monitor',
                             type = str,
-                            default = 'pcpu',
-                            help = 'Select from builtin monitors to feed data into monitor [default: pcpu]')
+                            default = None,
+                            help = 'Select from builtin monitors to feed data into graph [default: pcpu]')
         group.add_argument('-c', '--command',
                             type = str,
                             default = None,
-                            help = 'User command to feed data into monitor [example: ps -eo rss,pid,comm --no-headers]')
+                            help = 'User command to feed data into graph [example: ps -eo rss,pid,comm --no-headers]')
+        group.add_argument('-s', '--stream',
+                            type = str,
+                            default = None,
+                            help = 'Streaming user command to feed data into graph [example: tail -f file]')
+        group.add_argument('-f', '--file',
+                            nargs = '?',
+                            type = argparse.FileType("r"),
+                            default = None,
+                            const = sys.stdin,
+                            help = 'Continuously read file or STDIN to feed data into graph')
 
         parser.add_argument('-r', '--refreshrate',
                             type = int,
@@ -65,15 +78,32 @@ class Context:
             self.list_monitors()
             sys.exit(0)
 
-        if args.command == None:
+        if args.monitor:
+            print("args.monitor")
+            self.monitor_type = MonitorType.BUILTIN
             monitor = os.path.join(os.path.dirname(__file__), 'monitors', args.monitor)
             if not os.path.exists(monitor):
                 print(f"No such builtin monitor `{args.monitor}`. Use `--list-monitors` to list available builtin monitors.")
                 sys.exit(1)
             self.monitor_cmd = monitor
-        else:
+        elif args.command:
+            print("args.command")
+            self.monitor_type = MonitorType.COMMAND
             self.monitor_cmd = args.command
-            self.monitor_type = MonitorType.USER
+        elif args.stream:
+            print("args.stream")
+            self.monitor_type = MonitorType.STREAM
+            self.monitor_cmd = args.stream
+        elif args.file:
+            print("args.file")
+            self.monitor_type = MonitorType.FILE
+            self.monitor_cmd = args.file
+        else:
+            # default to pcpu builtin monitor
+            print("default pcpu")
+            self.monitor_type = MonitorType.BUILTIN
+            pcpu = os.path.join(os.path.dirname(__file__), 'monitors', 'pcpu')
+            self.monitor_cmd = pcpu
 
         self.refresh_rate = args.refreshrate
         self.max_ticks = args.ticks
@@ -86,11 +116,11 @@ class Context:
             self.tick_mod = 1
 
     def update_tick(self):
+        self.now = time.time()
         self.tick_index += 1;
         if self.tick_index == self.max_ticks:
             self.tick_index = 0
         self.tick_time = time.strftime("%H:%M:%S", time.localtime(time.time()))
-        self.mainwindow.rgn.setRegion((self.tick_index, self.tick_index))
 
     def list_monitors(self):
         print("Builtin monitors:")

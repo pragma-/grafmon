@@ -5,8 +5,8 @@ from pyqtgraph.Qt import QtCore, QtGui, QtWidgets
 
 import psutil as ps
 
-from .context            import Context
-from .errordialog        import ErrorDialog
+from .context import Context
+from .dialogs import ErrorDialog
 from .hoverablecurveitem import HoverableCurveItem
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -53,6 +53,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.gridLayout.setContentsMargins(0, 0, 0, 0)
         self.filter = QtWidgets.QLineEdit(self.layoutWidgetL)
         self.filter.setObjectName("filter")
+        self.filter.setVisible(False)
         self.gridLayout.addWidget(self.filter, 0, 0, 1, 2)
         self.tree = QtWidgets.QTreeWidget(self.layoutWidgetL)
         self.tree.setObjectName("tree")
@@ -130,7 +131,7 @@ class MainWindow(QtWidgets.QMainWindow):
         QtWidgets.QMessageBox.about(
                 self,
                 "About grafmon",
-                "<h1><center>grafmon 1.0.1</center></h1>"
+                "<h1><center>grafmon 1.1.0</center></h1>"
                 "<h2><p>Copyright &copy; 2024-2025 <a href='https://github.com/pragma-'>Pragmatic Software<a></h2>"
                 "<hr>"
                 "<h3><p><a href='https://github.com/pragma-/grafmon'>https://github.com/pragma-/grafmon</a>"
@@ -221,10 +222,11 @@ class MainWindow(QtWidgets.QMainWindow):
             val = float(data[0])
         except ValueError:
             self.context.timer.stop()
+            self.context.fatal_error = 1
             err = ErrorDialog()
             err.setText(f"Invalid data")
             err.setInformativeText("The data must be in the format of:\n\n<float> <string>")
-            err.setDetailedText(f"Invalid data:\n\n{data[0]} {data[1]}")
+            err.setDetailedText(f"Invalid data:\n\n{data!r}")
             err.show()
             self.context.app.exit(1)
             return

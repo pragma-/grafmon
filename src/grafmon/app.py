@@ -4,9 +4,11 @@ from pathlib import Path
 
 from PyQt6.QtWidgets import QApplication
 
-from .context    import Context
-from .mainwindow import MainWindow
-from .timer      import Timer
+from .context     import Context, MonitorType
+from .filemonitor import FileMonitor
+from .mainwindow  import MainWindow
+from .monitor     import Monitor
+from .timer       import Timer
 
 def exec():
     context = Context()
@@ -16,6 +18,11 @@ def exec():
     if context.refresh_rate < 100:
         print("Error: Refresh rate cannot be less than 100 ms.", file=sys.stderr)
         sys.exit(1)
+
+    if context.monitor_type == MonitorType.FILE:
+        context.monitor = FileMonitor(context)
+    else:
+        context.monitor = Monitor(context)
 
     context.app = QApplication(sys.argv)
     w = MainWindow(context)
