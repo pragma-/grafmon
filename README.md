@@ -42,7 +42,7 @@ options:
   -c COMMAND, --command COMMAND
                         User command to feed data into graph [example: ps -eo rss,pid,comm --no-headers]
   -s STREAM, --stream STREAM
-                        Streaming user command to feed data into graph [example: tail -f file]
+                        Streaming user command to feed data into graph [example: tail -f logfile]
   -f [FILE], --file [FILE]
                         Continuously read file or STDIN to feed data into graph
   -r REFRESHRATE, --refreshrate REFRESHRATE
@@ -128,11 +128,11 @@ For example:
      -s STREAM, --stream STREAM
 
 Grafmon will invoke the command once and expects the command to remain running. This is ideal for
-fetching data from a long-running process or server.
+fetching data from a long-running process or log file.
 
 For example:
 
-     grafmon -s 'tail -f file -n0'
+     grafmon -s 'tail -f logfile -n0'
      grafmon -s 'socat UNIX-LISTEN:data.sock -'
 
 ## File or STDIN

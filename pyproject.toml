@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "grafmon"
-version = "1.1.0"
+version = "1.1.1"
 dependencies = [
   "pyqtgraph",
   "PyQt6",

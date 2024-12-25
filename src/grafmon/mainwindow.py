@@ -52,11 +52,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.gridLayout = QtWidgets.QGridLayout(self.layoutWidgetL)
         self.gridLayout.setContentsMargins(0, 0, 0, 0)
         self.filter = QtWidgets.QLineEdit(self.layoutWidgetL)
-        self.filter.setObjectName("filter")
-        self.filter.setVisible(False)
         self.gridLayout.addWidget(self.filter, 0, 0, 1, 2)
         self.tree = QtWidgets.QTreeWidget(self.layoutWidgetL)
-        self.tree.setObjectName("tree")
         self.tree.setHeaderLabels(["Item", "Value"])
         self.tree.setMinimumSize(275, 150)
         self.tree.setSortingEnabled(True)
@@ -131,7 +128,7 @@ class MainWindow(QtWidgets.QMainWindow):
         QtWidgets.QMessageBox.about(
                 self,
                 "About grafmon",
-                "<h1><center>grafmon 1.1.0</center></h1>"
+                "<h1><center>grafmon 1.1.1</center></h1>"
                 "<h2><p>Copyright &copy; 2024-2025 <a href='https://github.com/pragma-'>Pragmatic Software<a></h2>"
                 "<hr>"
                 "<h3><p><a href='https://github.com/pragma-/grafmon'>https://github.com/pragma-/grafmon</a>"

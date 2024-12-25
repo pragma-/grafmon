@@ -79,7 +79,6 @@ class Context:
             sys.exit(0)
 
         if args.monitor:
-            print("args.monitor")
             self.monitor_type = MonitorType.BUILTIN
             monitor = os.path.join(os.path.dirname(__file__), 'monitors', args.monitor)
             if not os.path.exists(monitor):
@@ -87,20 +86,16 @@ class Context:
                 sys.exit(1)
             self.monitor_cmd = monitor
         elif args.command:
-            print("args.command")
             self.monitor_type = MonitorType.COMMAND
             self.monitor_cmd = args.command
         elif args.stream:
-            print("args.stream")
             self.monitor_type = MonitorType.STREAM
             self.monitor_cmd = args.stream
         elif args.file:
-            print("args.file")
             self.monitor_type = MonitorType.FILE
             self.monitor_cmd = args.file
         else:
             # default to pcpu builtin monitor
-            print("default pcpu")
             self.monitor_type = MonitorType.BUILTIN
             pcpu = os.path.join(os.path.dirname(__file__), 'monitors', 'pcpu')
             self.monitor_cmd = pcpu
